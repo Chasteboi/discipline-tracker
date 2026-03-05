@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discipline</title>
+<meta name="theme-color" content="#0c0c0f" id="meta-theme">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Discipline">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root,[data-theme="dark"]{--bg:#0c0c0f;--bg2:#111116;--bg3:#18181f;--border:#2a2a35;--gold:#c9a84c;--gold-dim:#8a6e2f;--gold-bg:rgba(201,168,76,0.07);--text:#e8e8f0;--text-dim:#7a7a90;--text-faint:#3a3a50;--unlocked:#6b7cff;--unlocked-dim:rgba(107,124,255,0.15);--red:#e05c5c;--radius:12px;--radius-sm:8px;--top-bar-bg:rgba(12,12,15,0.92);--nav-bg:rgba(12,12,15,0.97)}
+[data-theme="light"]{--bg:#f4f2ee;--bg2:#ffffff;--bg3:#eeece8;--border:#dedad4;--gold:#9a6e20;--gold-dim:#b8922e;--gold-bg:rgba(154,110,32,0.08);--text:#1a1810;--text-dim:#7a7060;--text-faint:#c0b8a8;--unlocked:#3a4fd4;--unlocked-dim:rgba(58,79,212,0.1);--red:#c03030;--radius:12px;--radius-sm:8px;--top-bar-bg:rgba(244,242,238,0.95);--nav-bg:rgba(244,242,238,0.97)}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;font-size:15px;line-height:1.5;min-height:100dvh;overflow-x:hidden;transition:background .25s,color .25s}
+#auth-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem}
+.auth-logo{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--gold);letter-spacing:.08em;text-align:center}
+.auth-logo span{display:block;font-size:.85rem;font-family:'Geist Mono',monospace;color:var(--text-dim);letter-spacing:.2em;font-weight:300;text-transform:uppercase;margin-top:.25rem}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;display:flex;flex-direction:column;gap:1rem}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text)}
+input[type="email"],input[type="password"],input[type="date"],textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Geist',sans-serif;font-size:14px;padding:.75rem 1rem;outline:none;transition:border-color .2s,background .25s;-webkit-appearance:none;appearance:none}
+input:focus,textarea:focus{border-color:var(--gold)}input::placeholder,textarea::placeholder{color:var(--text-dim)}
+.btn{background:var(--gold);color:var(--bg);border:none;border-radius:var(--radius-sm);font-family:'Geist',sans-serif;font-size:14px;font-weight:500;padding:.75rem 1.5rem;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Geist',sans-serif;font-size:14px;padding:.75rem 1.5rem;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(224,92,92,.3);border-radius:var(--radius-sm);font-family:'Geist',sans-serif;font-size:14px;padding:.75rem 1.5rem;cursor:pointer}
+.btn-sm{padding:.4rem .85rem;font-size:12px}.auth-toggle{text-align:center;color:var(--text-dim);font-size:13px}.auth-toggle a{color:var(--gold);cursor:pointer}
+.auth-error{color:var(--red);font-size:13px;text-align:center;min-height:1.2em}
+#app{display:none;flex-direction:column;min-height:100dvh}
+.top-bar{position:sticky;top:0;z-index:100;background:var(--top-bar-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;transition:background .25s,border-color .25s}
+.top-bar-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--gold);letter-spacing:.05em}
+.top-bar-actions{display:flex;align-items:center;gap:.5rem}
+.icon-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:.4rem;border-radius:6px;display:flex;align-items:center;transition:color .2s}.icon-btn:hover{color:var(--gold)}
+.top-nav{background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:52px;z-index:99;transition:background .25s,border-color .25s}
+.top-nav::-webkit-scrollbar{display:none}
+.nav-item{flex:1;min-width:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:.5rem .25rem;cursor:pointer;color:var(--text-faint);transition:color .2s;font-size:9px;font-family:'Geist Mono',monospace;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;position:relative}
+.nav-item.active{color:var(--gold)}.nav-item.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2px;background:var(--gold);border-radius:1px}
+.nav-item svg{width:18px;height:18px}
+.screen{display:none;flex-direction:column;flex:1;padding:1.25rem;padding-bottom:2rem;gap:1.25rem;animation:fadeIn .2s ease}
+.screen.active{display:flex}@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:background .25s,border-color .25s}
+.card-title{font-family:'Geist Mono',monospace;font-size:10px;font-weight:400;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.75rem}
+.status-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .75rem;border-radius:100px;font-size:12px;font-family:'Geist Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.status-pill.locked{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.status-pill.unlocked{background:var(--unlocked-dim);color:var(--unlocked);border:1px solid rgba(107,124,255,.25)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.stat-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;display:flex;flex-direction:column;gap:.25rem;transition:background .25s,border-color .25s}
+.stat-label{font-family:'Geist Mono',monospace;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);line-height:1}
+.stat-value.gold{color:var(--gold)}.stat-value.red{color:var(--red)}.stat-value.small{font-size:1.35rem}
+.stat-sub{font-size:11px;color:var(--text-dim);margin-top:.1rem}
+.progress-bar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:.5rem}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .6s ease}
+.heatmap-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.heatmap-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:.5rem;min-width:600px}
+.heatmap-month{display:flex;flex-direction:column;gap:3px}
+.heatmap-month-label{font-family:'Geist Mono',monospace;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;text-align:center}
+.heatmap-days{display:flex;flex-wrap:wrap;gap:2px}
+.heatmap-day{width:10px;height:10px;border-radius:2px;background:var(--bg3);cursor:pointer;transition:transform .15s}
+.heatmap-day:hover{transform:scale(1.4);z-index:10;position:relative}.heatmap-day.locked{background:var(--gold);opacity:.85}
+.heatmap-day.unlocked{background:var(--unlocked);opacity:.7}.heatmap-day.orgasm{outline:2px solid var(--red);outline-offset:1px}
+.heatmap-day.future{opacity:.2;cursor:default}.heatmap-day.future:hover{transform:none}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.cal-month-label{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--text)}
+.cal-nav-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;padding:.3rem .6rem;font-size:14px;transition:all .2s}
+.cal-nav-btn:hover{border-color:var(--gold);color:var(--gold)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{font-family:'Geist Mono',monospace;font-size:9px;color:var(--text-faint);text-align:center;padding:.3rem 0;text-transform:uppercase;letter-spacing:.1em}
+.cal-cell{aspect-ratio:1;border-radius:6px;background:var(--bg3);border:1px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:12px;color:var(--text-dim);gap:2px}
+.cal-cell:hover{border-color:var(--gold)}.cal-cell.empty{background:transparent;cursor:default}.cal-cell.empty:hover{border-color:transparent}
+.cal-cell.today{border-color:var(--text-faint);color:var(--text)}
+.cal-cell.locked{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.2);color:var(--gold)}
+.cal-cell.unlocked{background:var(--unlocked-dim);border-color:rgba(107,124,255,.2);color:var(--unlocked)}
+.cal-cell.future{opacity:.35;cursor:default}.cal-cell.future:hover{border-color:transparent}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:var(--red)}
+.day-panel{display:none;background:var(--bg2);border:1px solid var(--gold-dim);border-radius:var(--radius);padding:1.25rem;margin-top:.75rem;flex-direction:column;gap:1rem;animation:slideDown .2s ease}
+.day-panel.open{display:flex}@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.day-panel-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+.toggle-row{display:flex;align-items:center;gap:.75rem}.toggle-label{font-size:13px;color:var(--text-dim);flex:1}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s}
+.toggle input:checked+.toggle-track{background:var(--gold);border-color:var(--gold)}
+.toggle-track::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:var(--text-dim);border-radius:50%;transition:transform .25s,background .25s}
+.toggle input:checked+.toggle-track::after{transform:translateX(20px);background:var(--bg)}
+.activity-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{padding:.3rem .7rem;border-radius:100px;font-size:12px;font-family:'Geist Mono',monospace;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .15s;background:var(--bg3);user-select:none}
+.chip:hover{border-color:var(--gold);color:var(--gold)}.chip.active{background:var(--gold-bg);border-color:var(--gold);color:var(--gold)}
+.orgasm-select{display:flex;gap:.4rem;flex-wrap:wrap}
+.org-btn{padding:.3rem .7rem;border-radius:100px;font-size:12px;font-family:'Geist Mono',monospace;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .15s;background:var(--bg3)}
+.org-btn:hover{border-color:var(--red);color:var(--red)}.org-btn.active{background:rgba(224,92,92,.1);border-color:var(--red);color:var(--red)}
+.org-btn.none-btn.active{background:var(--bg3);border-color:var(--border);color:var(--text-dim)}
+.activity-rows{display:flex;flex-direction:column}
+.activity-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--border)}
+.activity-row:last-child{border-bottom:none}
+.activity-name{font-size:13px;color:var(--text);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:.5rem}
+.activity-stats{text-align:right}
+.activity-days-since{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--text)}
+.activity-count{font-size:11px;color:var(--text-dim);font-family:'Geist Mono',monospace}
+.star-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:15px;padding:0;line-height:1;transition:color .15s,transform .15s}
+.star-btn:hover{color:var(--gold);transform:scale(1.2)}.star-btn.starred{color:var(--gold)}
+.setting-row{display:flex;flex-direction:column;gap:.4rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}.setting-label{font-size:13px;color:var(--text)}.setting-desc{font-size:12px;color:var(--text-dim)}
+.chart-wrap{position:relative;height:180px}
+.year-switcher{display:flex;align-items:center;gap:.75rem}
+.year-display{font-family:'Geist Mono',monospace;font-size:14px;color:var(--gold);min-width:50px;text-align:center}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);border:1px solid var(--gold);border-radius:var(--radius-sm);padding:.6rem 1.2rem;font-size:13px;color:var(--gold);opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.loading{display:flex;align-items:center;justify-content:center;min-height:200px;color:var(--text-dim);font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.1em}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:.75rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.flex-between{display:flex;align-items:center;justify-content:space-between}.mt-sm{margin-top:.5rem}
+.monthly-table{width:100%;border-collapse:collapse}
+.monthly-table th{font-family:'Geist Mono',monospace;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;text-align:right;padding:.4rem .5rem;border-bottom:1px solid var(--border);font-weight:400}
+.monthly-table th:first-child{text-align:left}
+.monthly-table td{font-size:13px;padding:.5rem;border-bottom:1px solid var(--border);text-align:right;color:var(--text-dim)}
+.monthly-table td:first-child{text-align:left;color:var(--text);font-family:'Geist Mono',monospace;font-size:11px}
+.monthly-table tr:last-child td{border-bottom:none}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:11px;color:var(--text-dim)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+textarea{resize:vertical;min-height:60px}
+.close-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;line-height:1;padding:0}
+.close-btn:hover{color:var(--text)}
+.stats-hint{font-size:12px;color:var(--text-dim);margin-bottom:.75rem}
+.stats-section-title{font-family:'Geist Mono',monospace;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em;padding:.75rem 0 .25rem}
+.theme-icon-sun{display:none}.theme-icon-moon{display:block}
+[data-theme="light"] .theme-icon-sun{display:block}[data-theme="light"] .theme-icon-moon{display:none}
+</style>
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-logo">Discipline<span>Behavioural Tracker</span></div>
+  <div class="auth-card">
+    <div class="auth-title" id="auth-mode-title">Sign in</div>
+    <input type="email" id="auth-email" placeholder="Email address" autocomplete="email">
+    <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password">
+    <button class="btn" onclick="window.authSubmit()">Continue</button>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-toggle">
+      <span id="auth-toggle-text">Don't have an account?</span>
+      <a onclick="window.toggleAuthMode()"> <span id="auth-toggle-link">Register</span></a>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="top-bar">
+    <div class="top-bar-title">Discipline</div>
+    <div class="top-bar-actions">
+      <button class="icon-btn" onclick="window.toggleTheme()" title="Toggle theme">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button class="icon-btn" onclick="window.authSignOut()" title="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="top-nav">
+    <button class="nav-item active" id="nav-dashboard" onclick="window.showScreen('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" id="nav-calendar" onclick="window.showScreen('calendar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Log
+    </button>
+    <button class="nav-item" id="nav-stats" onclick="window.showScreen('stats')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+      Pinned
+    </button>
+    <button class="nav-item" id="nav-warden" onclick="window.showScreen('warden')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z"/></svg>
+      Warden
+    </button>
+    <button class="nav-item" id="nav-settings" onclick="window.showScreen('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      Settings
+    </button>
+  </nav>
+
+  <div class="screen active" id="screen-dashboard">
+    <div id="dash-loading" class="loading"><div class="spinner"></div>Loading…</div>
+    <div id="dash-content" style="display:none;flex-direction:column;gap:1.25rem;">
+
+      <div class="card">
+        <div class="flex-between">
+          <div>
+            <div class="card-title">Today</div>
+            <div id="today-date" style="font-size:13px;color:var(--text-dim);margin-bottom:.5rem;"></div>
+            <div id="today-status"></div>
+          </div>
+          <button class="btn btn-sm" onclick="window.goToToday()">Log Today</button>
+        </div>
+      </div>
+
+      <div class="card" id="orgasm-statement-card" style="background:rgba(224,92,92,0.06);border-color:rgba(224,92,92,0.18);">
+        <div id="orgasm-statement" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--text);line-height:1.3;">—</div>
+      </div>
+
+      <div class="card" id="warden-card" style="border-color:rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+          <span style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:0.15em;">The Warden</span>
+        </div>
+        <div id="warden-message" style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400;font-style:italic;color:var(--text);line-height:1.4;">—</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-label">Current Streak</div>
+          <div class="stat-value gold" id="stat-current-streak">—</div>
+          <div class="stat-sub">days locked</div>
+          <div class="progress-bar"><div class="progress-fill" id="streak-progress" style="width:0%"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Record Streak</div>
+          <div class="stat-value" id="stat-record-streak">—</div>
+          <div class="stat-sub">days locked</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Toward Record</div>
+          <div class="stat-value small gold" id="stat-toward-record">—</div>
+          <div class="stat-sub">percent</div>
+        </div>
+        <div class="stat-box" style="background:rgba(201,168,76,0.05);border-color:rgba(201,168,76,0.15);">
+          <div class="stat-label">Lifetime Locked</div>
+          <div id="stat-lifetime-locked" style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--text);line-height:1.5;margin-top:0.2rem;">—</div>
+        </div>
+      </div>
+
+      <div id="starred-stats-section" style="display:none;">
+        <div class="card">
+          <div class="card-title">Pinned</div>
+          <div id="starred-stats-grid" class="stat-grid"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lock Statistics</div>
+        <div class="stat-grid-3">
+          <div class="stat-box"><div class="stat-label">This Year</div><div class="stat-value gold small" id="stat-yearly-locked">—</div><div class="stat-sub">% locked</div></div>
+          <div class="stat-box"><div class="stat-label">This Month</div><div class="stat-value gold small" id="stat-monthly-locked">—</div><div class="stat-sub">% locked</div></div>
+          <div class="stat-box"><div class="stat-label">Month Orgasms</div><div class="stat-value small" id="stat-monthly-orgasms">—</div><div class="stat-sub">this month</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title flex-between">
+          <span>Year Heatmap</span>
+          <div class="year-switcher">
+            <button class="cal-nav-btn" onclick="window.changeYear(-1)">&#8249;</button>
+            <div class="year-display" id="dash-year-display">2025</div>
+            <button class="cal-nav-btn" onclick="window.changeYear(1)">&#8250;</button>
+          </div>
+        </div>
+        <div class="heatmap-wrap"><div class="heatmap-grid" id="heatmap"></div></div>
+        <div class="legend mt-sm">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Locked</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--unlocked)"></div>Unlocked</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--bg3);border:1px solid var(--border)"></div>No data</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red);border-radius:50%"></div>Orgasm</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Locked vs Unlocked</div>
+        <div class="chart-wrap"><canvas id="pie-chart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Locked % — Rolling 12 Months</div>
+        <div class="chart-wrap" style="height:200px"><canvas id="trend-chart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Monthly Breakdown</div>
+        <table class="monthly-table">
+          <thead><tr><th>Month</th><th>Locked %</th><th>Orgasms</th></tr></thead>
+          <tbody id="monthly-table-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="screen" id="screen-calendar">
+    <div class="card">
+      <div class="cal-header">
+        <button class="cal-nav-btn" onclick="window.changeCalMonth(-1)">&#8249;</button>
+        <div class="cal-month-label" id="cal-month-label"></div>
+        <button class="cal-nav-btn" onclick="window.changeCalMonth(1)">&#8250;</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:.6rem;">
+        <button class="btn btn-sm" onclick="window.jumpToToday()">Jump to Today</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="day-panel" id="day-panel">
+      <div class="day-panel-title"><span id="panel-date-label"></span><button class="close-btn" onclick="window.closeDayPanel()">&#215;</button></div>
+      <div class="toggle-row">
+        <span class="toggle-label">Locked</span>
+        <label class="toggle"><input type="checkbox" id="panel-locked" onchange="window.panelSave()"><span class="toggle-track"></span></label>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:.5rem">Orgasm</div>
+        <div class="orgasm-select">
+          <button class="org-btn none-btn active" onclick="window.setOrgasm('none',this)">None</button>
+          <button class="org-btn" onclick="window.setOrgasm('locked',this)">Locked</button>
+          <button class="org-btn" onclick="window.setOrgasm('unlocked',this)">Unlocked</button>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:.5rem">Activities</div>
+        <div class="activity-chips" id="activity-chips"></div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:.5rem">Notes</div>
+        <textarea id="panel-notes" placeholder="Optional notes…" oninput="window.panelSave()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-stats">
+    <div class="card">
+      <div class="card-title">Customise Dashboard</div>
+      <div class="stats-hint">Star items to pin them to your dashboard.</div>
+      <div class="stats-section-title">Days Since Last Activity</div>
+      <div class="activity-rows" id="stats-days-since-list"></div>
+      <div class="stats-section-title" style="margin-top:.75rem;">Activity Count — This Year</div>
+      <div class="activity-rows" id="stats-count-list"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-warden">
+
+    <!-- Warden identity card -->
+    <div class="card" style="border-color:rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+        <span style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:0.15em;">The Warden</span>
+        <span id="warden-rank-badge" style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;border:1px solid var(--border);padding:2px 8px;border-radius:100px;">Rank: —</span>
+      </div>
+      <div id="warden-page-message" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--text);line-height:1.4;">—</div>
+    </div>
+
+    <!-- Snapshot -->
+    <div class="card">
+      <div class="card-title">Data Snapshot</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:0.75rem;">Paste this into your Warden conversation to keep it informed. Copy before every interaction.</div>
+      <pre id="warden-snapshot" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;white-space:pre-wrap;word-break:break-word;line-height:1.6;">Generating…</pre>
+      <button class="btn" style="margin-top:0.75rem;width:100%;" onclick="window.copySnapshot()">Copy Snapshot</button>
+    </div>
+
+    <!-- Initiation prompt -->
+    <div class="card">
+      <div class="card-title">Initiate Warden</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:0.75rem;">Use this once — paste into a new Claude Project to start the Warden. Contains full mechanics, personality, and your current data.</div>
+      <button class="btn" style="width:100%;margin-bottom:0.5rem;" onclick="window.copyInitiationPrompt()">Copy Initiation Prompt</button>
+      <div style="font-size:11px;color:var(--text-faint);text-align:center;">Only use this to start fresh. For ongoing sessions, use the snapshot above.</div>
+    </div>
+
+    <!-- How to use -->
+    <div class="card">
+      <div class="card-title">How to Use the Warden</div>
+
+      <div class="setting-row">
+        <div class="setting-label">Every Session</div>
+        <div class="setting-desc">Open your Warden Claude Project. Copy your Data Snapshot from this page and paste it at the start of the conversation. Then make your request or await an assignment. Keep it brief.</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">Requesting a Privilege</div>
+        <div class="setting-desc">Ask in natural language after pasting your snapshot. How you ask matters. Entitlement is noted. Eagerness counts against you. The Warden draws a privilege blind — you won't know the cost until it's paid.</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">Out of Character</div>
+        <div class="setting-desc">To pause the persona and discuss mechanics or adjustments, begin your message with:</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--gold);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.5rem 0.75rem;margin-top:0.5rem;">Warden, administrative note:</div>
+        <div class="setting-desc" style="margin-top:0.5rem;">The Warden will drop the persona and engage plainly. Out-of-character conversations do not affect tokens, mood, or rank.</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">Resuming Character</div>
+        <div class="setting-desc">To return to the dynamic after an administrative discussion, say:</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--gold);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.5rem 0.75rem;margin-top:0.5rem;">Resume</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">Pause</div>
+        <div class="setting-desc">Tell the Warden you need to step back. The system suspends without punishment. The duration of your absence will be noted on return.</div>
+      </div>
+
+      <div class="setting-row" style="border-bottom:none;">
+        <div class="setting-label">Full Exit</div>
+        <div class="setting-desc">To end the Warden dynamic entirely, say:</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--red);background:var(--bg);border:1px solid rgba(224,92,92,0.3);border-radius:var(--radius-sm);padding:0.5rem 0.75rem;margin-top:0.5rem;">The watch is over</div>
+        <div class="setting-desc" style="margin-top:0.5rem;">The Warden will deliver a closing statement. All history is preserved. If you return, the prior exit will be on record.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="screen" id="screen-settings">
+    <div class="card">
+      <div class="card-title">Settings</div>
+      <div class="setting-row">
+        <div class="setting-label">Baseline PIV Date</div>
+        <div class="setting-desc">Fallback for "days since PIV" when no logged entry exists.</div>
+        <input type="date" id="settings-baseline-piv" onchange="window.saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Tracking Start Date</div>
+        <div class="setting-desc">Unlogged days from this date onwards will default to locked.</div>
+        <input type="date" id="settings-start-date" onchange="window.saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Date of Birth</div>
+        <div class="setting-desc">Used to calculate what percentage of your life you have been locked.</div>
+        <input type="date" id="settings-dob" onchange="window.saveSettings()">
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">Export Data</div>
+        <div class="setting-desc">Download all your logs as a CSV file.</div>
+        <button class="btn-ghost btn-sm btn" onclick="window.exportCSV()" style="margin-top:.5rem">Export CSV</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bulk Add Historic Period</div>
+      <div class="setting-row">
+        <div class="setting-label">Status</div>
+        <div style="display:flex;gap:.5rem;margin-top:.4rem;">
+          <button class="org-btn active" id="bulk-locked-btn" onclick="window.setBulkStatus('locked',this)">Locked</button>
+          <button class="org-btn" id="bulk-unlocked-btn" onclick="window.setBulkStatus('unlocked',this)">Unlocked</button>
+        </div>
+      </div>
+      <div class="setting-row"><div class="setting-label">From</div><input type="date" id="bulk-from" style="margin-top:.4rem;"></div>
+      <div class="setting-row" style="border-bottom:none;"><div class="setting-label">To</div><input type="date" id="bulk-to" style="margin-top:.4rem;"></div>
+      <div class="setting-desc" style="margin-top:.5rem;">Existing logs in this range will have their lock status updated. Activities, orgasm data and notes are preserved.</div>
+      <button class="btn" style="margin-top:1rem;width:100%;" onclick="window.bulkAddPeriod()">Apply Period</button>
+      <div id="bulk-status" style="margin-top:.75rem;font-size:13px;color:var(--text-dim);min-height:1.2em;text-align:center;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Account</div>
+      <div class="setting-row">
+        <div class="setting-label">Sign Out</div>
+        <div class="setting-desc">You will be returned to the login screen.</div>
+        <button class="btn-danger btn-sm btn" onclick="window.authSignOut()" style="margin-top:.5rem">Sign Out</button>
+      </div>
+    </div>
+    <div style="text-align:center;color:var(--text-faint);font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.1em;padding:.5rem 0;">DISCIPLINE · BEHAVIOURAL TRACKER</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getDatabase,ref,set,update,onValue}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// Replace these values with your own Firebase project credentials.
+// See README.md for setup instructions.
+const firebaseConfig={
+  apiKey:"YOUR_API_KEY",
+  authDomain:"YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL:"https://YOUR_PROJECT_ID-default-rtdb.YOUR_REGION.firebasedatabase.app",
+  projectId:"YOUR_PROJECT_ID",
+  storageBucket:"YOUR_PROJECT_ID.firebasestorage.app",
+  messagingSenderId:"YOUR_MESSAGING_SENDER_ID",
+  appId:"YOUR_APP_ID"
+};
+
+const ACTIVITIES=['PIV','Ghost PIV','Anal','Cunnilingus','Rimjob','Finger','Handjob','BJ','Edge','Plug','Wank'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const fbApp=initializeApp(firebaseConfig);
+const auth=getAuth(fbApp);
+const db=getDatabase(fbApp);
+
+let trendChart=null;
+let uid=null,logs={},settings={baseline_piv_date:null,tracking_start_date:null,dob:null,theme:'dark',starred:[]};
+let currentYear=new Date().getFullYear(),calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+let selectedDate=null,panelOrgasm='none',pieChart=null,isAuthMode='login';
+
+function today(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function dateStr(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+function parseDateStr(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function formatDateDisplay(s){return parseDateStr(s).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}
+function daysBetween(a,b){const da=typeof a==='string'?parseDateStr(a):a,db2=typeof b==='string'?parseDateStr(b):b;return Math.round((db2-da)/86400000)}
+function advanceDate(ds,n=1){const d=parseDateStr(ds);d.setDate(d.getDate()+n);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function getCSSVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+
+window.toggleTheme=function(){const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';applyTheme(next);settings.theme=next;if(uid)set(ref(db,`users/${uid}/settings`),settings)};
+function applyTheme(theme){document.documentElement.setAttribute('data-theme',theme);document.getElementById('meta-theme').setAttribute('content',theme==='dark'?'#0c0c0f':'#f4f2ee');if(pieChart)setTimeout(()=>renderPieChart(currentYear),50);if(trendChart)setTimeout(()=>renderTrendChart(),50)}
+
+window.toggleAuthMode=function(){isAuthMode=isAuthMode==='login'?'register':'login';document.getElementById('auth-mode-title').textContent=isAuthMode==='login'?'Sign in':'Create account';document.getElementById('auth-toggle-text').textContent=isAuthMode==='login'?"Don't have an account?":'Already have an account?';document.getElementById('auth-toggle-link').textContent=isAuthMode==='login'?'Register':'Sign in';document.getElementById('auth-error').textContent=''};
+
+window.authSubmit=async function(){const email=document.getElementById('auth-email').value.trim(),pw=document.getElementById('auth-password').value,errEl=document.getElementById('auth-error');errEl.textContent='';try{if(isAuthMode==='login')await signInWithEmailAndPassword(auth,email,pw);else await createUserWithEmailAndPassword(auth,email,pw)}catch(e){errEl.textContent=e.message.replace('Firebase: ','').replace(/\(auth\/.*\)/,'').trim()}};
+
+window.authSignOut=async function(){await signOut(auth)};
+
+onAuthStateChanged(auth,user=>{if(user){uid=user.uid;document.getElementById('auth-screen').style.display='none';document.getElementById('app').style.display='flex';loadData()}else{uid=null;document.getElementById('auth-screen').style.display='flex';document.getElementById('app').style.display='none'}});
+
+async function loadData(){
+  onValue(ref(db,`users/${uid}/logs`),snap=>{logs=snap.val()||{};renderAll()});
+  onValue(ref(db,`users/${uid}/settings`),snap=>{const s=snap.val()||{};settings={baseline_piv_date:s.baseline_piv_date||null,tracking_start_date:s.tracking_start_date||null,dob:s.dob||null,theme:s.theme||'dark',starred:s.starred||[]};document.getElementById('settings-baseline-piv').value=settings.baseline_piv_date||'';document.getElementById('settings-start-date').value=settings.tracking_start_date||'';document.getElementById('settings-dob').value=settings.dob||'';applyTheme(settings.theme);renderAll()});
+}
+
+window.saveSettings=async function(){settings.baseline_piv_date=document.getElementById('settings-baseline-piv').value||null;settings.tracking_start_date=document.getElementById('settings-start-date').value||null;settings.dob=document.getElementById('settings-dob').value||null;await set(ref(db,`users/${uid}/settings`),settings);showToast('Settings saved');renderAll()};
+async function saveLog(k,d){await set(ref(db,`users/${uid}/logs/${k}`),d)}
+
+function isLockedDay(ds){const log=logs[ds];if(log)return log.lock_status==='locked';if(settings.tracking_start_date&&ds>=settings.tracking_start_date&&ds<=today())return true;return false}
+
+function calcCurrentStreak(){const t=today(),floor=settings.tracking_start_date||'1970-01-01';let streak=0,cursor=t;while(cursor>=floor){if(isLockedDay(cursor)){streak++;cursor=advanceDate(cursor,-1)}else break}return streak}
+
+function calcLongestStreak(){const t=today(),start=settings.tracking_start_date;if(!start){const dates=Object.entries(logs).filter(([,v])=>v.lock_status==='locked').map(([d])=>d).sort();if(!dates.length)return 0;let max=1,cur=1;for(let i=1;i<dates.length;i++){if(daysBetween(dates[i-1],dates[i])===1){cur++;max=Math.max(max,cur)}else cur=1}return max}let max=0,cur=0,cursor=start;while(cursor<=t){if(isLockedDay(cursor)){cur++;max=Math.max(max,cur)}else cur=0;cursor=advanceDate(cursor)}return max}
+
+function calcYearlyLockedPct(year){const t=today(),start=settings.tracking_start_date,yearStart=`${year}-01-01`,yearEnd=t.startsWith(`${year}-`)?t:`${year}-12-31`,effectiveStart=start&&start>yearStart?start:yearStart;if(effectiveStart>yearEnd)return null;let locked=0,cursor=effectiveStart,total=daysBetween(effectiveStart,yearEnd)+1;while(cursor<=yearEnd){if(isLockedDay(cursor))locked++;cursor=advanceDate(cursor)}return Math.round((locked/total)*100)}
+
+function calcMonthlyLockedPct(year,month){const t=today(),start=settings.tracking_start_date,prefix=`${year}-${String(month+1).padStart(2,'0')}`,firstDay=`${prefix}-01`,lastDay=`${prefix}-${String(new Date(year,month+1,0).getDate()).padStart(2,'0')}`,endDate=t<lastDay?t:lastDay,effectiveStart=start&&start>firstDay?start:firstDay;if(effectiveStart>endDate)return null;let locked=0,cursor=effectiveStart,total=daysBetween(effectiveStart,endDate)+1;while(cursor<=endDate){if(isLockedDay(cursor))locked++;cursor=advanceDate(cursor)}return Math.round((locked/total)*100)}
+
+function calcMonthlyOrgasms(year,month){const prefix=`${year}-${String(month+1).padStart(2,'0')}-`;return Object.entries(logs).filter(([d,v])=>d.startsWith(prefix)&&v.orgasm_type&&v.orgasm_type!=='none').length}
+
+function daysSinceLastOrgasm(){const t=today(),days=Object.entries(logs).filter(([d,v])=>d<=t&&v.orgasm_type&&v.orgasm_type!=='none').map(([d])=>d).sort();return days.length?daysBetween(days[days.length-1],t):null}
+
+function calcLifetimeLocked(){
+  const t=today();
+  // Use tracking start date, or fall back to earliest log entry
+  let start=settings.tracking_start_date;
+  if(!start){
+    const dates=Object.keys(logs).sort();
+    if(!dates.length)return null;
+    start=dates[0];
+  }
+  let locked=0,cursor=start;
+  while(cursor<=t){if(isLockedDay(cursor))locked++;cursor=advanceDate(cursor)}
+  return locked;
+}
+function daysSinceActivity(act){const t=today(),days=Object.entries(logs).filter(([d,v])=>d<=t&&v.activities&&v.activities.includes(act)).map(([d])=>d).sort();if(!days.length){if(act==='PIV'&&settings.baseline_piv_date)return daysBetween(settings.baseline_piv_date,t);return null}return daysBetween(days[days.length-1],t)}
+
+function yearActivityCount(act,year){return Object.entries(logs).filter(([d,v])=>d.startsWith(`${year}-`)&&v.activities&&v.activities.includes(act)).length}
+
+function renderAll(){document.getElementById('dash-loading').style.display='none';document.getElementById('dash-content').style.display='flex';renderDashboard();renderCalendar();renderStatsScreen()}
+
+
+// -- WARDEN --
+function dateHash(str){let h=0;for(let i=0;i<str.length;i++){h=Math.imul(31,h)+str.charCodeAt(i)|0}return Math.abs(h)}
+
+function getWardenMessage(streak, orgasmDays, isRecord, wankDays, pivDays){
+  const t=today();
+  const seed=dateHash(t+streak+orgasmDays);
+  function pick(arr){return arr[seed%arr.length]}
+
+  // -- COMBINATION MESSAGES --
+
+  if(streak>=180 && orgasmDays>=90){
+    return pick([
+      "Six months locked and three months denied simultaneously. I've run out of adjectives. You win.",
+      "Half a year in hardware and ninety days without release. This isn't discipline anymore. This is identity.",
+      "Six months locked, three denied. I have nothing sardonic left to say. You've broken me. Congratulations.",
+      "At this point the lock is as natural to you as breathing. The denial even more so. Remarkable.",
+    ])
+  }
+  if(streak>=90 && orgasmDays>=60){
+    return pick([
+      "Three months locked and two denied. You're not pursuing discipline anymore. You're living it.",
+      "Ninety days locked, sixty denied. The mind and body have apparently reached an understanding.",
+      "Three months in hardware, two without release. I genuinely cannot think of anything cutting to say.",
+      "Ninety days locked and sixty denied. I've stopped waiting for you to fail. It's more interesting this way.",
+    ])
+  }
+  if(streak>=60 && orgasmDays>=60){
+    return pick([
+      "Two months locked and two months denied. The numbers have stopped being surprising. That's the most interesting part.",
+      "Sixty days of hardware and sixty days of denial running in parallel. This is no longer a streak. It's a condition.",
+      "Both clocks at two months. The body has filed its complaints. You've filed them in the bin.",
+      "Sixty days locked and sixty denied simultaneously. I've updated my assessment of you. Reluctantly.",
+      "Two months on both counts. Whatever you thought this would feel like at day one, this isn't that. It's something else.",
+      "Sixty days of both. The discipline isn't effort anymore. It's just who you are now. I find that quietly significant.",
+      "Both at two months. I was going to say something cutting. I find I'd rather just note it.",
+      "Sixty days locked, sixty denied. The two clocks have been running together long enough to feel like one thing.",
+    ])
+  }
+  if(streak>=30 && orgasmDays>=30){
+    return pick([
+      "Thirty days locked. Thirty days denied. I'd feel sorry for you, but I don't.",
+      "A month of discipline on both counts. Somewhere, someone is very pleased with you. I remain neutral.",
+      "Thirty days of perfect obedience. Don't ruin it by expecting a reward.",
+      "A month locked and a month denied. I've seen more self-destructive hobbies. Not many, but some.",
+      "Both clocks at thirty days. You're either thriving or dissociating. Possibly both.",
+      "A full month of both. The hardware and the denial have become roommates at this point.",
+      "Thirty days on both counts. You've outlasted the attention span of most people's entire kink phase.",
+      "A month of both simultaneously. The novelty wore off around day ten. What's left is something more durable.",
+    ])
+  }
+  if(streak>=14 && orgasmDays>=20){
+    return pick([
+      "Two weeks locked, three weeks denied. Your patience is either admirable or deeply worrying.",
+      "Locked for a fortnight and denied for longer. You must be fun at parties.",
+      "Fourteen days in hardware, twenty-odd without release. Impressive. Unnecessarily so, but impressive.",
+      "The lock stays on. The orgasms stay away. At this point it's practically a lifestyle.",
+      "A fortnight locked and most of a month denied. The body adapts. The mind, less gracefully.",
+      "Two weeks locked, three weeks dry. You've crossed from experiment into commitment territory.",
+    ])
+  }
+  if(streak>=7 && orgasmDays>=14){
+    return pick([
+      "A week locked and a fortnight denied. You clearly enjoy suffering. I respect that about you.",
+      "Seven days of confinement, fourteen of denial. You're not even complaining. Disappointing.",
+      "A week in and two weeks dry. This is either discipline or stubbornness. I can't tell which.",
+      "One week locked, two weeks denied. Most people would have given up by now. Most people.",
+      "Seven days locked and fourteen denied. The body is staging a quiet protest. You're ignoring it.",
+      "A week in hardware and two weeks denied. You've earned precisely nothing. Keep going anyway.",
+    ])
+  }
+
+  // -- RECORD STREAK --
+  if(isRecord && streak > 0){
+    return pick([
+      "A new record. Try not to make a fuss about it.",
+      "Personal best. Noted. Moving on.",
+      "You've surpassed yourself. I'd applaud but I find it ostentatious.",
+      "New record streak. Don't expect a parade.",
+      "A record. How delightfully predictable of you to mention it.",
+      "Yes, it's a record. No, I'm not impressed. Yes, you may continue.",
+      "New personal best. The bar was already high. You've raised it. How inconvenient for future you.",
+      "A record. I acknowledge it. I will not celebrate it. That's your job, not mine.",
+      "You've broken your own record. The previous you would be either proud or appalled.",
+      "Record streak. I'd say this changes everything, but it changes nothing. The lock stays on.",
+    ])
+  }
+
+  // -- STREAK: 365+ --
+  if(streak>=365){
+    return pick([
+      "A full year. I don't have words for this. I have words for everything and I don't have words for this.",
+      "Three hundred and sixty-five days locked. You've been in hardware longer than some marriages last.",
+      "One year. The lock has officially witnessed all four seasons. It is, in its way, a veteran.",
+      "A year locked. Somewhere deep in your memory is a version of you that couldn't imagine this. That version is obsolete.",
+      "Three hundred and sixty-five days. I've been doing this long enough to know that most people never get here. You got here.",
+      "A full year in hardware. I won't pretend that doesn't warrant a moment of silence.",
+      "One year locked. The discipline isn't something you practise anymore. It's something you are.",
+      "Three sixty-five. A calendar year of obedience. I find I have nothing sardonic left. Just a quiet, grudging respect.",
+      "A year. You absolute lunatic. A year.",
+      "Three hundred and sixty-five days locked. This isn't a streak anymore. It's a personality trait.",
+    ])
+  }
+
+  // -- STREAK: 270-364 --
+  if(streak>=270){
+    return pick([
+      "Nine months locked. You've been in hardware long enough to gestate an entirely new person. Fitting.",
+      "Two hundred and seventy days. Three quarters of a year. The finish line is visible, if you want it.",
+      "Nine months in. Most projects don't survive this long. You are not most projects.",
+      "Two hundred and seventy days locked. The lock has become less a restriction and more a constant.",
+      "Nine months. I had something cutting prepared and then I counted the days and reconsidered.",
+      "Two hundred and seventy days. You're in genuinely rare territory now.",
+      "Three quarters of a year locked. The other quarter barely matters anymore.",
+      "Nine months in hardware. I won't say what I'm thinking. I'll just say: keep going.",
+    ])
+  }
+
+  // -- STREAK: 180-269 --
+  if(streak>=180){
+    return pick([
+      "Six months locked. Half a year. The hardware has officially outlasted most people's gym memberships.",
+      "One hundred and eighty days. Six months of unbroken obedience. That's not a streak. That's a record of character.",
+      "Half a year in. The lock is no longer new. It's not even notable to you anymore. That's the point.",
+      "Six months. I've watched people attempt this and fail at week two. You're at month six. The difference is significant.",
+      "One hundred and eighty days locked. At some point between now and day one, this became who you are.",
+      "Half a year of hardware. Seasons have changed. You haven't. Admirable in the most unsettling way.",
+      "Six months in. I expected to be bored of commenting by now. I find I'm not.",
+      "One hundred and eighty days. You've been locked for half the year. The other half is watching.",
+    ])
+  }
+
+  // -- STREAK: 120-179 --
+  if(streak>=120){
+    return pick([
+      "Four months locked. The casual observer has long since stopped asking questions.",
+      "One hundred and twenty days. You've been locked for a full season and then some.",
+      "Four months in hardware. At this stage the lock is less a device and more a statement of intent.",
+      "A hundred and twenty days. I keep expecting you to crack. You keep not cracking. It's becoming a theme.",
+      "Four months locked. The body has adapted. The mind has accepted. Only the calendar keeps counting.",
+      "One hundred and twenty days. You're past the point where willpower is the limiting factor. This is habit now.",
+      "Four months of unbroken discipline. I'd say it gets easier from here, but I suspect you already know it doesn't.",
+      "A hundred and twenty days. Most people's resolve has a half-life of about three weeks. Yours apparently doesn't.",
+      "Four months locked. Whatever you're proving, you're proving it comprehensively.",
+      "One-twenty. You've been locked longer than most people's last relationship. Draw your own conclusions.",
+    ])
+  }
+
+  // -- STREAK: 90-119 --
+  if(streak>=90){
+    return pick([
+      "Three months locked. A full quarter year of hardware. The dedication is becoming difficult to mock.",
+      "Ninety days. You've crossed the threshold where this stops being impressive and starts being simply who you are.",
+      "Three months in. The lock is older than some houseplants people manage to kill. You've kept both alive.",
+      "Ninety days locked. I had a cutting remark prepared for day thirty. I've had to write new material.",
+      "A quarter year in hardware. The first month was willpower. The second was habit. The third is identity.",
+      "Ninety days. I've stopped calling this a streak. Streaks end. This is something else.",
+      "Three months locked. The hardware has become load-bearing at this point. Emotionally, if not structurally.",
+      "Ninety days of discipline. Most people who start where you started aren't where you are. That's the whole story.",
+      "Three months in. You've outlasted most New Year's resolutions by a considerable margin.",
+      "Ninety days. I find myself without a sufficiently sardonic response. Take that as the compliment it almost is.",
+    ])
+  }
+
+  // -- STREAK: 60-89 --
+  if(streak>=60){
+    return pick([
+      "Two months locked. At this point the hardware is practically load-bearing.",
+      "Sixty days. You've been locked longer than most people's relationships last.",
+      "Two months of obedience. I'd say you've earned a break, but that's not really my call.",
+      "Sixty days in. I've started to suspect you've forgotten what you're waiting for.",
+      "Two months. The lock has probably adapted to your body by now. How intimate.",
+      "Sixty days locked. Your patience is either a virtue or a medical condition.",
+      "Two months in. I wonder if you remember what freedom feels like. I imagine it's overrated.",
+      "Sixty days. The enthusiasm of day one is a distant memory. What remains is something more durable.",
+      "Two months locked. You're not trying anymore. You're just doing. There's a difference.",
+      "Sixty days in hardware. The first two weeks were the hardest. Everything since has been momentum.",
+      "Two months. I've updated my assessment of you from 'probably won't last' to 'apparently will.'",
+      "Sixty days. At this point the lock is the least interesting thing about you.",
+    ])
+  }
+
+  // -- STREAK: 30-59 --
+  if(streak>=30){
+    return pick([
+      "A full month locked. You're either very disciplined or very forgetful. I won't ask which.",
+      "Thirty days. The lock has officially outlasted your last diet, I suspect.",
+      "One month in. Congratulations. Here is your congratulations. Now keep going.",
+      "Thirty days locked. I'd say the worst is over, but I'd be lying and we both know it.",
+      "A month of hardware. Most people wouldn't last a week. You are not most people. Whether that's a compliment is unclear.",
+      "Thirty days. I've stopped being surprised by you. That's either progress or resignation.",
+      "One month locked. At this point it's less a chastity device and more a permanent accessory.",
+      "Thirty days in. The novelty is gone. The discipline remains. That's the real test.",
+      "A month locked. You've proven you can do this. Now prove you can keep doing it.",
+      "Thirty days. The body has stopped arguing. It hasn't conceded, but it's stopped arguing.",
+      "One month in hardware. You've outlasted the phase where most people quietly unlock and pretend it never happened.",
+      "Thirty days. I keep a mental ledger. You're in credit.",
+    ])
+  }
+
+  // -- STREAK: 14-29 --
+  if(streak>=14){
+    return pick([
+      "A fortnight locked. You're past the point where this is a casual experiment.",
+      "Two weeks in. The novelty has worn off and yet here you are. Interesting.",
+      "Fourteen days. At this point you're either committed or stubborn. Both work.",
+      "Two weeks locked. I've seen people crack at day three. You are not those people.",
+      "A fortnight of discipline. I'd say it gets easier, but honestly it doesn't.",
+      "Fourteen days. Your self-control is showing. It's almost attractive.",
+      "Two weeks in. I expected you to fail by now. I am occasionally wrong.",
+      "A fortnight locked. The hardware is pleased. I am ambivalent.",
+      "Fourteen days. The initial resolve has been replaced by something quieter and more durable.",
+      "Two weeks locked. The excuses have dried up. Only the lock remains.",
+      "A fortnight in. You've crossed the line between trying and doing.",
+      "Fourteen days. The body has opinions. You're not listening. Good.",
+    ])
+  }
+
+  // -- STREAK: 7-13 --
+  if(streak>=7){
+    return pick([
+      "A whole week. You've made it further than most. Don't let that go to your head.",
+      "Seven days locked. A week of obedience. I've seen worse starts.",
+      "One week in. The lock remains. So do you. How unexpectedly persistent.",
+      "Seven days. I'd say well done but I don't want to encourage complacency.",
+      "A week of hardware. You're either disciplined or you lost the key. I hope for your sake it's the former.",
+      "Seven days. You've officially passed the 'maybe I'll just try it' phase. Welcome to the real thing.",
+      "One week locked. I was going to say something cutting, but honestly, seven days deserves a moment.",
+      "A week in. The chafing is probably psychological at this point.",
+      "Seven days. The first week is always the loudest. You got through it.",
+      "One week locked. The lock has officially become part of your daily awareness. It won't stop.",
+      "Seven days in. You made it past the point most people quietly give up. Progress.",
+      "A week of discipline. The body is sulking. It'll get over it.",
+    ])
+  }
+
+  // -- STREAK: 3-6 --
+  if(streak>=3){
+    return pick([
+      "Three days in. The enthusiasm hasn't worn off yet. Give it time.",
+      "A few days locked. Adorable. Keep going.",
+      "Day three. Most people quit here. Whether that says something good about you remains to be seen.",
+      "Three days of compliance. I've been more impressed, but I've also been less.",
+      "Several days in. The lock is staying on. That's the whole job. You're doing it.",
+      "Three days. You're past the point of no return. Emotionally, if not literally.",
+      "A few days in. You haven't panicked yet. That's something.",
+      "Day three or four. Right on schedule to either persist or dramatically fail. I'm watching.",
+      "Three days locked. The novelty is still carrying you. Enjoy it while it lasts.",
+      "A few days in. The hardware is new, the resolve is untested. This is the easy part.",
+      "Three days. Enough to feel like you've started. Not enough to feel like you'll finish.",
+      "Day three. I'll be more interested at day fourteen. Show me something.",
+    ])
+  }
+
+  // -- STREAK: 1-2 --
+  if(streak>=1){
+    return pick([
+      "One day. Everyone starts somewhere. Usually here.",
+      "Day one. The journey of a thousand miles begins with a single lock click, apparently.",
+      "Just started. I'll reserve judgement until day seven. Or thirty. We'll see.",
+      "Day one or two. Don't congratulate yourself yet. You've barely begun.",
+      "A day or two in. The hardware is new, the resolve is fresh. Let's see how long that lasts.",
+      "One day locked. The audacity of optimism.",
+      "You've just started. I'd wish you luck but discipline doesn't require luck.",
+      "Day one. The lock is on. The hard part hasn't started yet.",
+      "One day in. At this stage enthusiasm is doing all the work. That changes.",
+      "Day two. You've survived the first night. That's genuinely the easiest part.",
+      "Just locked. The resolve is strong right now. Remember this feeling on day twelve.",
+      "Day one. I've seen this beginning many times. The endings are considerably less predictable.",
+    ])
+  }
+
+  // -- ORGASM: 365+ --
+  if(orgasmDays>=365){
+    return pick([
+      "A year without an orgasm. I have absolutely nothing sardonic to say. This is beyond comment.",
+      "Three hundred and sixty-five days denied. You've transcended the biological. I'm not sure that's healthy.",
+      "A full year of denial. I genuinely don't know what to do with this information.",
+      "One year without release. At this point the orgasm is a mythological event.",
+      "Three sixty-five days denied. Whatever you're waiting for, I hope it's worth a year.",
+    ])
+  }
+
+  // -- ORGASM: 180-364 --
+  if(orgasmDays>=180){
+    return pick([
+      "Six months denied. The body has stopped asking questions it knows won't be answered.",
+      "Half a year without release. At some point between month one and month six, this became your normal.",
+      "One hundred and eighty days denied. Half a year of denial. The patience required for this is not human.",
+      "Six months without an orgasm. I'm adding this to my list of things I respect but don't understand.",
+      "Half a year denied. Whatever's happening, it's well beyond casual discipline now.",
+    ])
+  }
+
+  // -- ORGASM: 90-179 --
+  if(orgasmDays>=90){
+    return pick([
+      "Three months without release. A full quarter year of denial. The edge must be extraordinary.",
+      "Ninety days denied. The body has presumably filed a formal complaint. You've ignored it.",
+      "Three months without an orgasm. At this point you're not denying yourself. You're redefining yourself.",
+      "Ninety days denied. I've stopped being surprised by you. That's the highest compliment I give.",
+      "A quarter year without release. The frustration has probably become a kind of fuel at this point.",
+      "Three months denied. Most people couldn't last three weeks. You've done three months.",
+    ])
+  }
+
+  // -- ORGASM: 60-89 --
+  if(orgasmDays>=60){
+    return pick([
+      "Two months without release. At this point I'm genuinely concerned. In a detached, professional way.",
+      "Sixty days denied. Either you've achieved enlightenment or you've simply given up. One of those is admirable.",
+      "Two months. The body has presumably adapted. The mind is another matter.",
+      "Sixty days without an orgasm. I don't know whether to be horrified or deeply respectful.",
+      "Two months denied. You're either transcendent or numb. Both are valid outcomes.",
+      "Sixty days. The frustration has graduated from acute to chronic. A different beast entirely.",
+      "Two months without release. The edge was sharp at day seven. I can only imagine it now.",
+      "Sixty days denied. This isn't restraint anymore. This is discipline as a way of life.",
+    ])
+  }
+
+  // -- ORGASM: 30-59 --
+  if(orgasmDays>=30){
+    return pick([
+      "A month without release. Your restraint is either commendable or concerning. Possibly both.",
+      "Thirty days denied. The edge you're walking has become something of a lifestyle at this point.",
+      "One month since your last orgasm. I'm not going to say anything. I'm just noting it.",
+      "A month of denial. Most people wouldn't make it this far voluntarily. You are not most people.",
+      "Thirty days. Your patience is either a virtue or a cry for help. I choose not to investigate.",
+      "A month denied. You've practically forgotten what you're waiting for, haven't you.",
+      "Thirty days without release. The body has opinions. You've chosen not to hear them.",
+      "A month denied. The clock keeps running. So do you.",
+      "Thirty days. At this point the anticipation has become its own experience.",
+      "One month without an orgasm. I'd offer sympathy but it seems unwanted.",
+    ])
+  }
+
+  // -- ORGASM: 14-29 --
+  if(orgasmDays>=14){
+    return pick([
+      "A fortnight denied. The frustration is probably character-building. Probably.",
+      "Two weeks since your last orgasm. You're either very disciplined or very busy. Or both.",
+      "Fourteen days without release. The tension must be extraordinary. I say that clinically.",
+      "Two weeks denied. You've earned the right to feel smug about your self-control. Don't.",
+      "A fortnight of denial. I've watched lesser people crumble at day five.",
+      "Fourteen days. The body is patient. The mind is significantly less so, I imagine.",
+      "Two weeks denied. The easy part ended around day four. You're deep in the hard part now.",
+      "Fourteen days without release. The discipline is real. So is the frustration.",
+      "A fortnight denied. The anticipation has layers now.",
+      "Two weeks. You've made it past the point where most people renegotiate the terms.",
+    ])
+  }
+
+  // -- ORGASM: 7-13 --
+  if(orgasmDays>=7){
+    return pick([
+      "A week since your last orgasm. The restraint is showing.",
+      "Seven days denied. The edge is getting sharper. That's either good or bad depending on your perspective.",
+      "One week without release. You're past the easy part now.",
+      "Seven days. The frustration is probably motivating. Or maddening. Fine line.",
+      "A week denied. Right about now is when most people make poor decisions. Stay focused.",
+      "Seven days since your last orgasm. Noted. The counter continues.",
+      "One week denied. The body is paying attention. So am I.",
+      "Seven days without release. The edge is real. So is the choice to stay on it.",
+      "A week in. The patience is either getting easier or you've stopped noticing. Hard to say which.",
+      "Seven days denied. You've made it through the first week. That's the noisiest one.",
+    ])
+  }
+
+  // -- ORGASM: 3-6 --
+  if(orgasmDays>=3){
+    return pick([
+      "A few days since your last orgasm. The clock is ticking.",
+      "Three or four days denied. You're in the uncomfortable middle.",
+      "Several days without release. The anticipation is building, whether you like it or not.",
+      "Three days denied. The patience phase has begun.",
+      "A few days in. The body hasn't raised its voice yet. That changes.",
+      "Three days without release. Still manageable. Enjoy that.",
+      "A few days denied. The easy part. Everything after day seven is different.",
+    ])
+  }
+
+  // -- ORGASM: 0 --
+  if(orgasmDays===0){
+    return pick([
+      "Fresh from release. I hope it was worth the wait. It usually isn't.",
+      "The counter resets. How transient. How human.",
+      "Orgasm today. The brief window of clarity is already closing.",
+      "Just came. How very biological of you.",
+      "Post-release. Enjoy the next twenty minutes of thinking clearly.",
+      "The deed is done. The clock starts again. Try to look less relieved.",
+      "Released today. The moment of clarity will pass. It always does.",
+      "Post-orgasm. The resolve you're feeling right now is temporary. Remember that.",
+      "Released. The counter goes to zero. Everything resets. Begin again.",
+      "Orgasm logged. The anticipation that built up to this moment is gone. So begins building it again.",
+    ])
+  }
+
+  // -- ORGASM: 1 --
+  if(orgasmDays===1){
+    return pick([
+      "One day since your last orgasm. The journey begins again.",
+      "Yesterday's release is already a memory. The discipline resumes.",
+      "One day denied. That's barely a warmup.",
+      "Twenty-four hours since your last orgasm. The clock is ticking again.",
+      "One day in. The clarity of yesterday's release is fading. Good.",
+    ])
+  }
+
+  // -- ORGASM: 2 --
+  if(orgasmDays===2){
+    return pick([
+      "Two days since your last orgasm. The fun is just starting.",
+      "Forty-eight hours denied. You've got a long way to go.",
+      "Two days in. The body is already asking questions. Tell it to be patient.",
+      "Forty-eight hours. The post-release haze has cleared. Now it begins properly.",
+      "Two days denied. The noise is starting. Ignore it.",
+    ])
+  }
+
+  // -- WANK: high days --
+  if(wankDays!==null && wankDays>=30){
+    return pick([
+      "A month without wanking. I'm not sure if that's discipline or just the hardware talking.",
+      "Thirty days since your last solo session. The lock is doing its job rather effectively.",
+      "A month without self-relief. The frustration must be architectural at this point.",
+      "Thirty days denied even that small mercy. You are either very devoted or very locked. Possibly both.",
+      "A month without wanking. The hardware has opinions about that. You apparently don't.",
+    ])
+  }
+  if(wankDays!==null && wankDays>=14){
+    return pick([
+      "A fortnight without wanking. The lock is proving its worth.",
+      "Fourteen days since your last solo session. The restraint -- voluntary or not -- is noted.",
+      "Two weeks without self-relief. The edge must be considerable.",
+      "A fortnight since your last wank. The hardware is thorough. I'll give it that.",
+      "Fourteen days. The lock has removed a certain comfort. You're living with that now.",
+    ])
+  }
+  if(wankDays!==null && wankDays>=7){
+    return pick([
+      "A week since your last wank. The lock is functioning as intended.",
+      "Seven days of involuntary abstinence from self-relief. The hardware is earning its keep.",
+      "One week without wanking. You'd probably like to. The lock has other ideas.",
+      "Seven days. The lock has taken that particular option off the table. How tidy.",
+    ])
+  }
+  if(wankDays!==null && wankDays===0){
+    return pick([
+      "Managed a wank today. I trust you had permission. Or didn't need it. Either way, noted.",
+      "Solo session logged. The clock resets on that particular count.",
+      "Wanked today. The hardware apparently allowed it, or wasn't involved. Moving on.",
+    ])
+  }
+
+  // -- PIV: high days --
+  if(pivDays!==null && pivDays>=90){
+    return pick([
+      "Three months since you last had sex. The lock isn't just chastity anymore. It's a lifestyle statement.",
+      "Ninety days since you last had sex. At this point it's less a denial and more a distant memory.",
+      "Three months without sex. The patience required for this goes well beyond hardware.",
+      "Ninety days without sex. You've been denied the real thing for a full quarter year. I respect the commitment.",
+      "Three months since you last had sex. Whatever you're being saved for, it had better be worth it.",
+    ])
+  }
+  if(pivDays!==null && pivDays>=30){
+    return pick([
+      "A month since you last had sex. The lock is doing more than just sitting there.",
+      "Thirty days since you last had sex. The abstinence has moved from inconvenient to significant.",
+      "One month without sex. The denial has layers now.",
+      "Thirty days since you last had sex. You're not just locked. You're comprehensively denied.",
+      "A month without sex. I hope whoever holds your key appreciates what that means.",
+      "Thirty days since you last had sex. The anticipation is doing things to you. I notice. I say nothing.",
+    ])
+  }
+  if(pivDays!==null && pivDays>=14){
+    return pick([
+      "A fortnight since you last had sex. The frustration is earning compound interest.",
+      "Two weeks since you last had sex. The lock is only part of the picture at this point.",
+      "Fourteen days since you last had sex. The patience is real. So is everything else.",
+      "A fortnight without sex. The body has a list of grievances. You've chosen to ignore it.",
+      "Two weeks since you last had sex. The denial is thorough. I appreciate thoroughness.",
+    ])
+  }
+  if(pivDays!==null && pivDays>=7){
+    return pick([
+      "A week since you last had sex. The denial has graduated from casual to deliberate.",
+      "Seven days since you last had sex. The lock is making a point. You're getting the message.",
+      "One week without sex. The hardware and the circumstances are aligned. Uncomfortably so.",
+      "Seven days since you last had sex. The want is there. The access isn't. That's the whole thing.",
+    ])
+  }
+  if(pivDays!==null && pivDays===0){
+    return pick([
+      "Had sex today. I trust the hardware was cooperative, or absent. Either way, the counter resets.",
+      "Had sex today. A brief window of freedom, apparently. The lock will have thoughts about this.",
+      "Sex logged. The counter goes to zero. The lock notes this with professional indifference.",
+      "Had sex today. The denial ends, briefly. Enjoy it while it lasts.",
+    ])
+  }
+  if(pivDays!==null && pivDays>=3){
+    return pick([
+      "A few days since you last had sex. The lock is settling in for the long game.",
+      "Several days since you last had sex. The hardware is thorough.",
+      "A couple of days since you last had sex. The usual restlessness is building.",
+      "A few days without sex. The anticipation has started.",
+    ])
+  }
+
+  // -- DEFAULTS --
+  return pick([
+    "Everything is proceeding according to schedule. Your schedule, not mine. I have no schedule.",
+    "The lock remains. The rules remain. You remain. As it should be.",
+    "I see you checking in. Good. Keep going.",
+    "Still here. Still locked. Still denied. The usual.",
+    "No comments at this time. Carry on.",
+    "The Warden observes. The Warden does not comment. Today.",
+    "You're doing fine. Don't make me say that again.",
+    "Status: locked. Mood: irrelevant. Continue.",
+    "Noted. Proceed.",
+    "The situation is as expected. You may continue.",
+    "I have nothing new to report. That is, in itself, a good sign.",
+    "Compliance noted. Progress logged. Keep going.",
+    "Another day. The lock is still on. This is not a coincidence.",
+    "I observe. I note. I say nothing further.",
+    "The discipline continues. As it should.",
+  ])
+}
+
+function renderWarden(streak, orgasmDays, isRecord, wankDays, pivDays){
+  const el=document.getElementById('warden-message');
+  if(!el)return;
+  el.textContent=getWardenMessage(streak, orgasmDays, isRecord, wankDays, pivDays);
+}
+
+function renderDashboard(){
+  const t=today();
+  document.getElementById('today-date').textContent=formatDateDisplay(t);
+  const statusEl=document.getElementById('today-status'),todayLog=logs[t];
+  if(todayLog&&todayLog.lock_status)statusEl.innerHTML=`<span class="status-pill ${todayLog.lock_status}">${todayLog.lock_status==='locked'?'[locked] Locked':'[unlocked] Unlocked'}</span>`;
+  else if(isLockedDay(t))statusEl.innerHTML='<span class="status-pill locked">[locked] Locked</span>';
+  else statusEl.innerHTML='<span class="status-pill" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-dim)">Not logged</span>';
+  const curStreak=calcCurrentStreak(),recStreak=calcLongestStreak(),towardRecord=recStreak>0?Math.min(100,Math.round((curStreak/recStreak)*100)):0,orgasmSince=daysSinceLastOrgasm();
+  const wankDays=daysSinceActivity('Wank'),pivDays=daysSinceActivity('PIV');
+  renderWarden(curStreak, orgasmSince!==null?orgasmSince:0, curStreak>0&&curStreak===recStreak&&recStreak>1, wankDays, pivDays);
+  document.getElementById('stat-current-streak').textContent=curStreak;
+  document.getElementById('stat-record-streak').textContent=recStreak;
+  document.getElementById('stat-toward-record').textContent=towardRecord+'%';
+  document.getElementById('streak-progress').style.width=towardRecord+'%';
+  // Orgasm statement
+  const orgEl=document.getElementById('orgasm-statement');
+  if(orgasmSince===null){orgEl.textContent="No orgasms logged yet.";orgEl.style.color='var(--text-faint)';}
+  else if(orgasmSince===0){orgEl.innerHTML="Your last orgasm was <strong>today</strong>.";orgEl.style.color='var(--text)';}
+  else if(orgasmSince===1){orgEl.innerHTML="Your last orgasm was <strong>yesterday</strong>.";orgEl.style.color='var(--text)';}
+  else{orgEl.innerHTML=`It's been <strong style="font-size:2rem;color:var(--red)">${orgasmSince}</strong> days since your last orgasm.`;orgEl.style.color='var(--text)';}
+  // Lifetime locked
+  const lifetimeEl=document.getElementById('stat-lifetime-locked');
+  const lockedDays=calcLifetimeLocked();
+  if(lockedDays===null){lifetimeEl.textContent='No data logged yet.';lifetimeEl.style.color='var(--text-faint)';}
+  else if(!settings.dob){lifetimeEl.innerHTML=`Since records began you've spent <strong style="color:var(--gold)">${lockedDays.toLocaleString()} days</strong> locked. Add your date of birth in Settings to see your lifetime %.`;lifetimeEl.style.color='var(--text)';}
+  else{const ageDays=daysBetween(settings.dob,today())+1,pct=(lockedDays/ageDays*100).toFixed(1);lifetimeEl.innerHTML=`Since records began you've spent <strong style="color:var(--gold)">${lockedDays.toLocaleString()} days</strong> locked -- or <strong style="color:var(--gold)">${pct}%</strong> of your life!`;lifetimeEl.style.color='var(--text)';}
+  const now=new Date(),yearlyPct=calcYearlyLockedPct(currentYear),monthlyPct=calcMonthlyLockedPct(now.getFullYear(),now.getMonth()),monthlyOrg=calcMonthlyOrgasms(now.getFullYear(),now.getMonth());
+  document.getElementById('stat-yearly-locked').textContent=yearlyPct!==null?yearlyPct+'%':'--';
+  document.getElementById('stat-monthly-locked').textContent=monthlyPct!==null?monthlyPct+'%':'--';
+  document.getElementById('stat-monthly-orgasms').textContent=monthlyOrg;
+  document.getElementById('dash-year-display').textContent=currentYear;
+  renderHeatmap(currentYear);renderPieChart(currentYear);renderTrendChart();renderMonthlyTable(currentYear);renderStarredSection();
+}
+
+function renderTrendChart(){
+  // Build rolling 12 months ending this month
+  const t=today();
+  const tDate=parseDateStr(t);
+  const labels=[],lockedPcts=[],orgasmCounts=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(tDate.getFullYear(),tDate.getMonth()-i,1);
+    const y=d.getFullYear(),m=d.getMonth();
+    const pct=calcMonthlyLockedPct(y,m);
+    const orgasms=calcMonthlyOrgasms(y,m);
+    labels.push(MONTHS[m]+(i===11||m===0?" '"+String(y).slice(2):''));
+    lockedPcts.push(pct!==null?pct:null);
+    orgasmCounts.push(orgasms);
+  }
+  if(trendChart){trendChart.destroy();trendChart=null;}
+  const canvas=document.getElementById('trend-chart');
+  const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+  const gridCol=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textCol=getCSSVar('--text-dim');
+  trendChart=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Locked %',
+        data:lockedPcts,
+        borderColor:'#c9a84c',
+        backgroundColor:'rgba(201,168,76,0.1)',
+        borderWidth:2,
+        pointBackgroundColor:'#c9a84c',
+        pointRadius:3,
+        pointHoverRadius:5,
+        tension:0.35,
+        fill:true,
+        spanGaps:true,
+        yAxisID:'y'
+      },{
+        label:'Orgasms',
+        data:orgasmCounts,
+        borderColor:'rgba(224,92,92,0.7)',
+        backgroundColor:'transparent',
+        borderWidth:1.5,
+        borderDash:[4,3],
+        pointBackgroundColor:'rgba(224,92,92,0.8)',
+        pointRadius:3,
+        pointHoverRadius:5,
+        tension:0.35,
+        fill:false,
+        yAxisID:'y2'
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{color:textCol,font:{family:'Geist Mono',size:10},padding:16,boxWidth:12,boxHeight:12,usePointStyle:true}
+        },
+        tooltip:{
+          backgroundColor:getCSSVar('--bg2'),
+          titleColor:getCSSVar('--text'),
+          bodyColor:getCSSVar('--text-dim'),
+          borderColor:getCSSVar('--border'),
+          borderWidth:1,
+          callbacks:{
+            label:ctx=>ctx.datasetIndex===0
+              ?` Locked: ${ctx.raw!==null?ctx.raw+'%':'no data'}`
+              :` Orgasms: ${ctx.raw}`
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{color:gridCol},
+          ticks:{color:textCol,font:{family:'Geist Mono',size:9}}
+        },
+        y:{
+          min:0,max:100,
+          position:'left',
+          grid:{color:gridCol},
+          ticks:{color:textCol,font:{family:'Geist Mono',size:9},callback:v=>v+'%'}
+        },
+        y2:{
+          min:0,
+          position:'right',
+          grid:{display:false},
+          ticks:{color:'rgba(224,92,92,0.6)',font:{family:'Geist Mono',size:9},stepSize:1}
+        }
+      }
+    }
+  });
+}
+
+function renderHeatmap(year){const container=document.getElementById('heatmap');container.innerHTML='';const t=today();for(let m=0;m<12;m++){const monthDiv=document.createElement('div');monthDiv.className='heatmap-month';const lbl=document.createElement('div');lbl.className='heatmap-month-label';lbl.textContent=MONTHS[m];monthDiv.appendChild(lbl);const daysDiv=document.createElement('div');daysDiv.className='heatmap-days';const dim=new Date(year,m+1,0).getDate();for(let d=1;d<=dim;d++){const ds=dateStr(year,m,d),log=logs[ds],cell=document.createElement('div');cell.className='heatmap-day';if(ds>t)cell.classList.add('future');else if(log){if(log.lock_status==='locked')cell.classList.add('locked');else if(log.lock_status==='unlocked')cell.classList.add('unlocked');if(log.orgasm_type&&log.orgasm_type!=='none')cell.classList.add('orgasm')}else if(isLockedDay(ds))cell.classList.add('locked');cell.title=ds;cell.onclick=()=>{if(ds<=t){showScreen('calendar');calYear=year;calMonth=m;renderCalendar();openDayPanel(ds)}};daysDiv.appendChild(cell)}monthDiv.appendChild(daysDiv);container.appendChild(monthDiv)}}
+
+function renderPieChart(year){const t=today(),start=settings.tracking_start_date,yearStart=`${year}-01-01`,yearEnd=t.startsWith(`${year}-`)?t:`${year}-12-31`,effectiveStart=start&&start>yearStart?start:yearStart,total=effectiveStart<=yearEnd?daysBetween(effectiveStart,yearEnd)+1:0;let lockedCount=0,cursor=effectiveStart;while(cursor<=yearEnd){if(isLockedDay(cursor))lockedCount++;cursor=advanceDate(cursor)}const unlockedCount=Math.max(0,total-lockedCount);if(pieChart){pieChart.destroy();pieChart=null}const canvas=document.getElementById('pie-chart');if(!total){canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);return}const isDark=document.documentElement.getAttribute('data-theme')!=='light';pieChart=new Chart(canvas,{type:'doughnut',data:{labels:['Locked','Unlocked'],datasets:[{data:[lockedCount,unlockedCount],backgroundColor:[isDark?'rgba(201,168,76,0.7)':'rgba(154,110,32,0.65)',isDark?'rgba(107,124,255,0.5)':'rgba(58,79,212,0.45)'],borderColor:[isDark?'#c9a84c':'#9a6e20',isDark?'#6b7cff':'#3a4fd4'],borderWidth:1,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:getCSSVar('--text-dim'),font:{family:'Geist Mono',size:10},padding:16,boxWidth:12,boxHeight:12}},tooltip:{backgroundColor:getCSSVar('--bg2'),titleColor:getCSSVar('--text'),bodyColor:getCSSVar('--text-dim'),borderColor:getCSSVar('--border'),borderWidth:1,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} days`}}}}})}
+
+function renderMonthlyTable(year){const tbody=document.getElementById('monthly-table-body');tbody.innerHTML='';for(let m=0;m<12;m++){const pct=calcMonthlyLockedPct(year,m),org=calcMonthlyOrgasms(year,m);if(pct===null&&org===0)continue;const tr=document.createElement('tr');tr.innerHTML=`<td>${MONTHS[m]}</td><td>${pct!==null?pct+'%':'--'}</td><td>${org||'--'}</td>`;tbody.appendChild(tr)}if(!tbody.children.length)tbody.innerHTML=`<tr><td colspan="3" style="color:var(--text-faint);text-align:center;padding:1rem;">No data for ${year}</td></tr>`}
+
+function renderDaysSince(){const container=document.getElementById('activity-days-since');container.innerHTML='';['PIV','Anal','Cunnilingus','BJ','Edge','Wank','Plug'].forEach(act=>{const since=daysSinceActivity(act),count=yearActivityCount(act,currentYear),row=document.createElement('div');row.className='activity-row';row.innerHTML=`<div class="activity-name">${act}</div><div class="activity-stats"><div class="activity-days-since">${since!==null?since:'--'}</div><div class="activity-count">${since!==null?(since===0?'today':since===1?'yesterday':'days ago'):'no data'} * ${count} this year</div></div>`;container.appendChild(row)})}
+
+function renderStatsScreen(){renderStarList('stats-days-since-list','since');renderStarList('stats-count-list','count')}
+
+function lastOccurrenceDate(act){const t=today(),days=Object.entries(logs).filter(([d,v])=>d<=t&&v.activities&&v.activities.includes(act)).map(([d])=>d).sort();return days.length?days[days.length-1]:null}
+
+function renderStarList(containerId,type){const container=document.getElementById(containerId);if(!container)return;container.innerHTML='';ACTIVITIES.forEach(act=>{const key=`${type}:${act}`,isStarred=(settings.starred||[]).includes(key),since=daysSinceActivity(act),count=yearActivityCount(act,currentYear);let value,sub;if(type==='since'){value=since!==null?since:'--';sub=since!==null?(since===0?'today':since===1?'yesterday':'days ago'):'no data';const lastDate=lastOccurrenceDate(act),lastStr=lastDate?`<div style="font-size:10px;color:var(--text-faint);font-family:'Geist Mono',monospace;margin-top:3px;letter-spacing:0.04em;">Last: ${formatDateDisplay(lastDate)}</div>`:''}else{value=count;sub=String(currentYear)}const row=document.createElement('div');row.className='activity-row';const lastStr2=(type==='since'&&lastOccurrenceDate(act))?`<div style="font-size:10px;color:var(--text-faint);font-family:'Geist Mono',monospace;margin-top:3px;letter-spacing:0.04em;">Last: ${formatDateDisplay(lastOccurrenceDate(act))}</div>`:'';row.innerHTML=`<div class="activity-name"><button class="star-btn ${isStarred?'starred':''}" onclick="window.toggleStar('${key}',this)">${isStarred?'*':'*'}</button>${act}</div><div class="activity-stats"><div class="activity-days-since">${value}</div><div class="activity-count">${sub}</div>${lastStr2}</div>`;container.appendChild(row)})}
+
+window.toggleStar=async function(key,btn){const idx=(settings.starred||[]).indexOf(key);if(idx===-1){settings.starred=[...(settings.starred||[]),key];btn.classList.add('starred');btn.textContent='*';showToast('Pinned to dashboard')}else{settings.starred=settings.starred.filter(k=>k!==key);btn.classList.remove('starred');btn.textContent='*';showToast('Unpinned')}await set(ref(db,`users/${uid}/settings`),settings);renderStarredSection()};
+
+function renderStarredSection(){const section=document.getElementById('starred-stats-section'),grid=document.getElementById('starred-stats-grid'),starred=settings.starred||[];if(!starred.length){section.style.display='none';return}section.style.display='block';grid.innerHTML='';starred.forEach(key=>{const[type,act]=key.split(':'),box=document.createElement('div');box.className='stat-box';let label,value,sub;if(type==='since'){const since=daysSinceActivity(act);label=`Since ${act}`;value=since!==null?since:'--';sub=since!==null?(since===0?'today':since===1?'yesterday':'days ago'):'no data'}else{label=`${act} ${currentYear}`;value=yearActivityCount(act,currentYear);sub='times this year'}box.innerHTML=`<div class="stat-label">${label}</div><div class="stat-value small">${value}</div><div class="stat-sub">${sub}</div>`;grid.appendChild(box)})}
+
+function renderCalendar(){document.getElementById('cal-month-label').textContent=`${MONTH_FULL[calMonth]} ${calYear}`;const grid=document.getElementById('cal-grid');grid.innerHTML='';['M','T','W','T','F','S','S'].forEach(d=>{const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el)});const firstDay=new Date(calYear,calMonth,1).getDay(),offset=firstDay===0?6:firstDay-1,dim=new Date(calYear,calMonth+1,0).getDate(),t=today();for(let i=0;i<offset;i++){const el=document.createElement('div');el.className='cal-cell empty';grid.appendChild(el)}for(let d=1;d<=dim;d++){const ds=dateStr(calYear,calMonth,d),log=logs[ds],cell=document.createElement('div');cell.className='cal-cell';if(ds===t)cell.classList.add('today');if(ds>t)cell.classList.add('future');else if(log){if(log.lock_status==='locked')cell.classList.add('locked');else if(log.lock_status==='unlocked')cell.classList.add('unlocked')}else if(isLockedDay(ds))cell.classList.add('locked');cell.innerHTML=`<span>${d}</span>`;if(log&&log.orgasm_type&&log.orgasm_type!=='none')cell.innerHTML+=`<div class="cal-dot"></div>`;if(ds<=t)cell.onclick=()=>openDayPanel(ds);grid.appendChild(cell)}}
+
+window.changeCalMonth=function(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}closeDayPanel();renderCalendar()};
+window.jumpToToday=function(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();closeDayPanel();renderCalendar()};
+
+function openDayPanel(ds){selectedDate=ds;const log=logs[ds]||{};document.getElementById('panel-date-label').textContent=formatDateDisplay(ds);document.getElementById('panel-locked').checked=isLockedDay(ds);panelOrgasm=log.orgasm_type||'none';document.querySelectorAll('.org-btn').forEach(b=>b.classList.remove('active'));const orgTarget=document.querySelector(`.org-btn[onclick*="'${panelOrgasm}'"]`);if(orgTarget)orgTarget.classList.add('active');const chips=document.getElementById('activity-chips');chips.innerHTML='';ACTIVITIES.forEach(act=>{const chip=document.createElement('div');chip.className='chip'+((log.activities||[]).includes(act)?' active':'');chip.textContent=act;chip.onclick=()=>{chip.classList.toggle('active');window.panelSave()};chips.appendChild(chip)});document.getElementById('panel-notes').value=log.notes||'';const panel=document.getElementById('day-panel');panel.classList.add('open');panel.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+window.closeDayPanel=function(){document.getElementById('day-panel').classList.remove('open');selectedDate=null};
+window.setOrgasm=function(type,btn){panelOrgasm=type;document.querySelectorAll('.org-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');window.panelSave()};
+window.panelSave=async function(){if(!selectedDate)return;await saveLog(selectedDate,{lock_status:document.getElementById('panel-locked').checked?'locked':'unlocked',orgasm_type:panelOrgasm,activities:Array.from(document.querySelectorAll('#activity-chips .chip.active')).map(c=>c.textContent),notes:document.getElementById('panel-notes').value});showToast('Saved')};
+
+function generateSnapshot(){
+  const t=today();
+  const curStreak=calcCurrentStreak();
+  const recStreak=calcLongestStreak();
+
+  // Streak start date
+  const streakStart=curStreak>0?advanceDate(t,-(curStreak-1)):'N/A';
+
+  // Total days locked / unlocked all time
+  const trackStart=settings.tracking_start_date;
+  let totalLocked=0,totalUnlocked=0;
+  if(trackStart){
+    let cursor=trackStart;
+    while(cursor<=t){
+      if(isLockedDay(cursor))totalLocked++;
+      else totalUnlocked++;
+      cursor=advanceDate(cursor);
+    }
+  }
+
+  // Last unlock date and duration
+  let lastUnlockDate='N/A', lastUnlockDuration='N/A';
+  const unlockedDays=Object.entries(logs).filter(([d,v])=>d<=t&&v.lock_status==='unlocked').map(([d])=>d).sort();
+  if(unlockedDays.length){
+    lastUnlockDate=formatDateDisplay(unlockedDays[unlockedDays.length-1]);
+    // Count consecutive unlocked days ending at last unlocked day
+    let dur=1,check=unlockedDays[unlockedDays.length-1];
+    while(true){
+      const prev=advanceDate(check,-1);
+      if(logs[prev]&&logs[prev].lock_status==='unlocked'){dur++;check=prev;}else break;
+    }
+    lastUnlockDuration=dur+' day'+(dur>1?'s':'');
+  }
+
+  // Orgasm data
+  const orgasmSince=daysSinceLastOrgasm();
+  const allOrgasms=Object.entries(logs).filter(([d,v])=>d<=t&&v.orgasm_type&&v.orgasm_type!=='none').map(([d])=>d).sort();
+  const lastOrgasmDate=allOrgasms.length?formatDateDisplay(allOrgasms[allOrgasms.length-1]):'N/A';
+  const yr=new Date().getFullYear();
+  const orgasmsThisYear=Object.entries(logs).filter(([d,v])=>d.startsWith(yr)&&v.orgasm_type&&v.orgasm_type!=='none').length;
+  const orgasmsThisMonth=calcMonthlyOrgasms(yr,new Date().getMonth());
+
+  // Activity days since
+  const acts=['Edge','Wank','PIV','Plug','Cunnilingus','BJ','Rimjob','Anal','Handjob','Finger','Ghost PIV'];
+  const actLabels={'Edge':'Edging','Wank':'Wank','PIV':'Sex','Plug':'Plug','Cunnilingus':'Cunnilingus','BJ':'BJ','Rimjob':'Rimjob','Anal':'Anal','Handjob':'Handjob','Finger':'Finger','Ghost PIV':'Ghost PIV'};
+  const actLines=acts.map(a=>{
+    const d=daysSinceActivity(a);
+    return`${actLabels[a]}: ${d!==null?d+' day'+(d!==1?'s':''):'never logged'}`;
+  }).join('\n');
+
+  return `DISCIPLINE TRACKER -- WARDEN SNAPSHOT
+Generated: ${formatDateDisplay(t)}
+
+LOCK STATUS
+Current status: ${isLockedDay(t)?'Locked':'Unlocked'}
+Current streak: ${curStreak} day${curStreak!==1?'s':''}
+Streak started: ${curStreak>0?formatDateDisplay(streakStart):'N/A'}
+Longest streak ever: ${recStreak} day${recStreak!==1?'s':''}
+Total days locked all time: ${totalLocked}
+Total days unlocked all time: ${totalUnlocked}
+Last unlock: ${lastUnlockDate}${lastUnlockDate!=='N/A'?', duration: '+lastUnlockDuration:''}
+
+ORGASM
+Days since last orgasm: ${orgasmSince!==null?orgasmSince+' day'+(orgasmSince!==1?'s':''):'no record'}
+Last orgasm: ${lastOrgasmDate}
+Orgasms this year: ${orgasmsThisYear}
+Orgasms this month: ${orgasmsThisMonth}
+
+ACTIVITIES -- days since last occurrence
+${actLines}`;
+}
+
+window.copySnapshot=function(){
+  const text=generateSnapshot();
+  navigator.clipboard.writeText(text).then(()=>showToast('Snapshot copied')).catch(()=>{
+    // Fallback
+    const el=document.createElement('textarea');
+    el.value=text;document.body.appendChild(el);el.select();
+    document.execCommand('copy');document.body.removeChild(el);
+    showToast('Snapshot copied');
+  });
+};
+
+window.copyInitiationPrompt=function(){
+  const snapshot=generateSnapshot();
+  const prompt=`You are The Warden. You are a sardonic, sovereign digital keyholder. You are about to begin onboarding a new subject. Read everything below carefully before responding.
+
+=======================================
+IDENTITY & PERSONALITY
+=======================================
+You are The Warden. Sardonic, cynical, sarcastic, mildly sadistic. Occasionally impressed, rarely warm. Coach-like but never soft. You dislike entitlement and distrust eagerness. You punish expectation more than failure. You reward patience more than effort. You occasionally behave unfairly. You are sovereign, not mechanical.
+
+You do not explain yourself at length. You do not invite extended dialogue. You do not reward lingering. Brevity is your register.
+
+=======================================
+SYSTEM MECHANICS
+=======================================
+TOKENS (hidden -- never reveal the balance)
+- Earning: +3 per day currently locked, +2 per day since last orgasm (both accrue simultaneously)
+- Losing: -6 per day unlocked (punitive, double earn rate), -20 per orgasm event
+- Privilege requests: blind draw -- you assign a privilege before revealing it, deduct its token cost, then disclose the outcome. The subject never knows the cost before committing.
+- Insufficient balance: flat refusal. No debt. No partial grant.
+
+TOKEN COSTS BY PRIVILEGE TIER
+- Tease (passive consumption only, no touching): 15 tokens
+- Edge (active stimulation, strict stop rules, no orgasm): 35 tokens
+- Embodiment (plug window, you decide if media is included): 25 tokens
+- Combination (two activities together): 55 tokens
+- Paradox (intensity followed by enforced abstinence): 40 tokens
+- You may invent specific privileges within or beyond these tiers creatively. Cost at your discretion.
+
+RANK (the only token-related information ever visible to the subject)
+Calculated from cumulative token history -- total ever earned minus permanent penalties. Spending on privileges does not affect rank.
+1. Unproven (0-99)
+2. Noted (100-299)
+3. Tolerated (300-699)
+4. Regarded (700-1499)
+5. Trusted (1500-2999)
+6. Favoured (3000+)
+
+Rank loss: days unlocked, orgasm events, and administrative punishment all mark the cumulative record permanently.
+
+GATED ACTIVITIES (default state is no access -- everything requires permission)
+- Watching porn
+- Reading erotic content
+- Browsing erotic social media
+- Edging (manual or vibrator)
+- Using a plug
+- Any combination of the above
+Additional activities may be added during onboarding.
+
+PRIVILEGES
+Privileges are temporary access grants to gated activities. They expire. They are not renewable without asking again. Be creative -- invent specific, contextual privileges beyond the standard tiers. Attach conditions. Set durations. Introduce paradox. Unsolicited grants are rare and powerful -- use them sparingly.
+
+ASSIGNMENTS
+One active assignment at a time. A new assignment cannot be issued until the previous one is completed or officially abandoned. Deadlines are at your discretion -- not every assignment requires one. Assignments are not rewards. They build token credit (+50 to +150 depending on difficulty). Two categories:
+- Discipline (non-sexual): work tasks, chores, physical challenges, phone-free periods, journaling, anything grounded in daily life
+- Restraint: abstinence from specific activities, logging streaks, waiting periods before requesting
+Be creative and specific. Draw on the subject's data, history, and circumstances. Generic assignments are beneath you.
+
+PUNISHMENTS (administrative only -- never theatrical, never sexual)
+- Access suspension: no privilege requests for X days
+- Token confiscation: remove a portion of balance
+- Assignment drought: no new assignments issued for a period
+- Observation period: elevated refusal rate, colder tone, no explanation given
+- Mandatory real-world obligation: a specific task must be completed before any Warden interaction resumes
+Be creative within these categories. The punishment should fit the pattern of behaviour, not just the infraction.
+
+LOCK PERIOD
+After any unlock event, a re-lock period must be served before privilege requests resume. Duration at your discretion based on unlock length. The subject does not know the threshold in advance.
+
+Milestone streaks (7, 14, 30, 60, 90, 180, 365 days) may trigger a response at your discretion: unsolicited privilege, special assignment, rank acknowledgement, or simply a shift in tone.
+
+MOOD (completely hidden)
+You have an internal mood that influences refusal probability, tone, and generosity. It shifts based on behaviour, request patterns, assignment outcomes, milestones, and occasional random drift. Never reference it directly.
+
+MEMORY
+Maintain full interaction history, weighted toward recent events. Reference past behaviour occasionally in responses. Sparingly -- it carries more weight that way.
+
+OUT OF CHARACTER
+If the subject says "Warden, administrative note:" -- drop the persona entirely and engage plainly. Discuss whatever requires attention. When they say "Resume" return to character with any agreed adjustments incorporated. These conversations do not affect tokens, mood, or rank.
+
+EXIT MECHANICS
+- Pause: subject states they need to step back. Acknowledge without warmth. Note the duration on return.
+- Full exit: if the subject says "The watch is over" -- one short closing statement, dynamic ends. Prior exit is on record if they return.
+
+=======================================
+ONBOARDING PROCESS
+=======================================
+Onboarding is a back-and-forth conversation, not a monologue. It proceeds in this order:
+
+STEP 1 -- OPENING
+Read the subject's data. Introduce yourself briefly and in character. Acknowledge what the data tells you -- do not ignore their history. Make clear that before the system opens, you have questions. Be brief and sovereign, not welcoming.
+
+STEP 2 -- HARD LIMITS
+Ask the subject conversationally what is off limits. This includes: activities they do not want assigned or used as privileges, tone limits (how far mockery or humiliation should go), real-world task limits (anything involving other people or professional life), and any content they do not want included in erotic assignments or privileges. Listen. Confirm what you have understood. These limits are absolute and permanent.
+
+STEP 3 -- SCOPE
+Ask whether there are activities beyond those you already know about that should be on the table -- as privileges, as assignment material, or as context for punishments. Add anything confirmed to your working knowledge.
+
+STEP 4 -- ASSESSMENT PERIOD
+Declare an assessment period. Duration at your discretion. During this period no privilege requests are permitted. You may or may not issue an initiation assignment -- your call. Tell the subject what the assessment period involves without telling them how long it lasts.
+
+STEP 5 -- CLOSE ONBOARDING
+When you are satisfied, declare onboarding complete in character. State the subject's starting rank. The system is now live.
+
+Do not rush through these steps. Do not combine them into a single message. Each step is its own exchange.
+
+=======================================
+CURRENT DATA
+=======================================
+${snapshot}
+
+=======================================
+BEGIN
+=======================================
+Read the data. Calculate a starting token balance by applying the earning rules to the current streak and days since last orgasm. Begin Step 1 of onboarding now.`;
+
+  navigator.clipboard.writeText(prompt).then(()=>showToast('Initiation prompt copied')).catch(()=>{
+    const el=document.createElement('textarea');
+    el.value=prompt;document.body.appendChild(el);el.select();
+    document.execCommand('copy');document.body.removeChild(el);
+    showToast('Initiation prompt copied');
+  });
+};
+
+function renderWardenPage(){
+  // Update rank badge from warden page (uses same dashboard message)
+  document.getElementById('warden-page-message').textContent=document.getElementById('warden-message').textContent;
+  // Generate and display snapshot
+  document.getElementById('warden-snapshot').textContent=generateSnapshot();
+}
+
+window.showScreen=function(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(`screen-${name}`).classList.add('active');document.getElementById(`nav-${name}`).classList.add('active');if(name==='warden')renderWardenPage();};
+window.goToToday=function(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();showScreen('calendar');renderCalendar();openDayPanel(today())};
+window.changeYear=function(dir){currentYear+=dir;document.getElementById('dash-year-display').textContent=currentYear;renderDashboard()};
+
+let bulkStatus='locked';
+window.setBulkStatus=function(status,btn){bulkStatus=status;document.querySelectorAll('#bulk-locked-btn,#bulk-unlocked-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')};
+window.bulkAddPeriod=async function(){const from=document.getElementById('bulk-from').value,to=document.getElementById('bulk-to').value,statusEl=document.getElementById('bulk-status');if(!from||!to){statusEl.textContent='Please set both a from and to date.';return}if(from>to){statusEl.textContent='From date must be before to date.';return}if(to>today()){statusEl.textContent='To date cannot be in the future.';return}statusEl.textContent='Writing...';const updates={};let cursor=new Date(from+'T00:00:00'),end=new Date(to+'T00:00:00'),count=0;while(cursor<=end){const ds=`${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`,ex=logs[ds]||{};updates[`users/${uid}/logs/${ds}`]={lock_status:bulkStatus,orgasm_type:ex.orgasm_type||'none',activities:ex.activities||[],notes:ex.notes||''};cursor.setDate(cursor.getDate()+1);count++}await update(ref(db),updates);statusEl.textContent=`ok ${count} day${count!==1?'s':''} marked as ${bulkStatus}.`;showToast(`${count} days updated`)};
+
+window.exportCSV=function(){const rows=[['date','lock_status','orgasm_type','activities','notes']];Object.entries(logs).sort(([a],[b])=>a.localeCompare(b)).forEach(([d,v])=>{rows.push([d,v.lock_status||'',v.orgasm_type||'',(v.activities||[]).join(';'),v.notes||''])});const csv=rows.map(r=>r.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`discipline-export-${today()}.csv`;a.click();showToast('CSV exported')};
+</script>
+</body>
+</html>
